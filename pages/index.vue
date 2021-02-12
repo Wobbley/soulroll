@@ -1,68 +1,102 @@
 <template>
-  <div class="container">
-    <div>
-      <Logo />
-      <h1 class="title">soulroll</h1>
-      <div class="links">
-        <a
-          href="https://nuxtjs.org/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--green"
-        >
-          Documentation
-        </a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--grey"
-        >
-          GitHub
-        </a>
+  <div class="flex flex-col w-10/12 mx-auto">
+    <div class="flex flex-row justify-center items-end space-x-4 mb-10">
+      <div>
+        <label class="block" for="name">Name</label>
+        <input v-model="name" class="border border-black" type="text" name="username" />
+      </div>
+      <div>
+        <label class="block" for="amount">Dice Size</label>
+        <input v-model="diceSize" class="border border-black" type="number" name="dice size" />
+      </div>
+      <div class="block">
+        <label class="block" for="username">Amount of Dice</label>
+        <input v-model="diceAmount" class="border border-black" type="number" name="dice amount" />
+      </div>
+      <div>
+        <label class="block" for="username">Succes (equal or higher)</label>
+        <input v-model="success" class="border border-black" type="number" name="success" />
+      </div>
+      <div>
+        <button class="content-end bg-green-500" @click="rollDice(name, diceSize, diceAmount, success)">Roll</button>
+      </div>
+    </div>
+    <div class="flex flex-col">
+      <div v-for="roll in rolls" :key="roll.id" class="border-t border-black">
+        <div class="flex justify-center space-x-6 flex-row mb-1 mt-6">
+          <p><b>Name: </b>{{ roll.name }}</p>
+          <p><b>Successes: </b>{{ roll.successes }}</p>
+          <p><b>Dice Size: </b>{{ roll.diceSize }}</p>
+          <p><b>Dice Amount: </b>{{ roll.diceAmount }}</p>
+          <p><b>Success: </b>{{ roll.success }}</p>
+        </div>
+        <div class="flex justify-center space-x-6 flex-row flex-wrap mb-6">
+          <p><b>Rolls: </b></p>
+          <div v-for="(dice, index) in roll.dice" :key="index" class="flex flex-row">
+            {{ dice }}
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-export default {}
+import { DateTime } from 'luxon'
+
+export default {
+  data() {
+    return {
+      rolls: [],
+      name: 'Derp',
+      diceSize: '',
+      diceAmount: '',
+      success: '',
+    }
+  },
+  created() {
+    const lastMonth = DateTime.local().minus({ months: 1 })
+    this.$fire.firestore
+      .collection('rooms')
+      .doc('testing')
+      .collection('rolls')
+      .where('rollDate', '>', lastMonth.toMillis())
+      .orderBy('rollDate')
+      .onSnapshot((snapshot) => {
+        snapshot.docChanges().forEach((change) => {
+          if (change.type === 'added') {
+            const roll = change.doc.data()
+            roll.id = change.doc.id
+            this.rolls.unshift(roll)
+            // eslint-disable-next-line no-console
+            console.log(this.rolls)
+          }
+        })
+      })
+  },
+  methods: {
+    rollDice(name, diceSize, diceAmount, success) {
+      const newRoll = {}
+      newRoll.name = name
+      newRoll.diceSize = diceSize
+      newRoll.diceAmount = diceAmount
+      newRoll.success = success
+      newRoll.successes = 0
+      newRoll.rollDate = Date.now()
+      newRoll.dice = []
+      let diceRolls = 0
+      while (diceRolls < newRoll.diceAmount) {
+        const result = 1 + Math.floor(Math.random() * newRoll.diceSize)
+        if (result >= newRoll.success) {
+          newRoll.successes++
+        }
+        newRoll.dice.push(result)
+        diceRolls++
+      }
+      this.$fire.firestore.collection('rooms').doc('testing').collection('rolls').add(newRoll)
+    },
+  },
+}
 </script>
 
-<style>
-/* Sample `apply` at-rules with Tailwind CSS
-.container {
-@apply min-h-screen flex justify-center items-center text-center mx-auto;
-}
-*/
-.container {
-  margin: 0 auto;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-
-.title {
-  font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  display: block;
-  font-weight: 300;
-  font-size: 100px;
-  color: #35495e;
-  letter-spacing: 1px;
-}
-
-.subtitle {
-  font-weight: 300;
-  font-size: 42px;
-  color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 15px;
-}
-
-.links {
-  padding-top: 15px;
-}
-</style>
+<style></style>
