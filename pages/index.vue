@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col w-10/12 mx-auto mt-10">
-    <div class="flex flex-row justify-center items-end space-x-4 mb-10">
+    <div class="flex flex-col justify-center items-center mb-10 lg:space-x-4 lg:items-end lg:flex-row">
       <div>
         <label class="block" for="name">Name</label>
         <input v-model="name" class="border border-black" type="text" name="username" />
@@ -14,12 +14,12 @@
         <input v-model="diceAmount" class="border border-black" type="number" name="dice amount" />
       </div>
       <div>
-        <label class="block" for="username">Success value (equal or higher)</label>
+        <label class="block" for="username">Success threshold</label>
         <input v-model="success" class="border border-black" type="number" name="success" />
       </div>
-      <div>
+      <div class="mt-2">
         <button
-          class="bg-green-500 bg-green-700 text-white font-bold py-2 px-4 rounded"
+          class="hover:bg-green-600 bg-green-700 text-white font-bold py-2 px-4 rounded"
           @click="rollDice(name, diceSize, diceAmount, success)"
         >
           Roll
@@ -32,14 +32,18 @@
           <p><b>Name: </b>{{ roll.name }}</p>
           <p><b>Successes: </b>{{ roll.successes }}</p>
           <!-- <p><b>Dice Size: </b>{{ roll.diceSize }}</p>
-          <p><b>Dice Amount: </b>{{ roll.diceAmount }}</p>
-          <p><b>Success: </b>{{ roll.success }}</p> -->
+          <p><b>Dice Amount: </b>{{ roll.diceAmount }}</p> -->
         </div>
-        <div class="flex justify-center space-x-6 flex-row flex-wrap mb-6">
+        <div class="flex justify-center space-x-6 flex-row flex-wrap mb-2">
           <p><b>Rolls: </b></p>
           <div v-for="(dice, index) in roll.dice" :key="index" class="flex flex-row">
             {{ dice }}
           </div>
+        </div>
+        <div class="flex justify-center space-x-6 flex-row text-gray-700 text-opacity-25 text-sm">
+          <p><b>Dice Size: </b>{{ roll.diceSize }}</p>
+          <p><b>Dice Amount: </b>{{ roll.diceAmount }}</p>
+          <p><b>Success threshold: </b>{{ roll.success }}</p>
         </div>
       </div>
     </div>
@@ -54,18 +58,18 @@ export default {
     return {
       rolls: [],
       name: '',
-      diceSize: '',
+      diceSize: 6,
       diceAmount: '',
       success: '',
     }
   },
   created() {
-    const lastMonth = DateTime.local().minus({ months: 1 })
+    const newerThan = DateTime.local().minus({ days: 7 })
     this.$fire.firestore
       .collection('rooms')
       .doc('testing')
       .collection('rolls')
-      .where('rollDate', '>', lastMonth.toMillis())
+      .where('rollDate', '>', newerThan.toMillis())
       .orderBy('rollDate')
       .onSnapshot((snapshot) => {
         snapshot.docChanges().forEach((change) => {
@@ -73,8 +77,6 @@ export default {
             const roll = change.doc.data()
             roll.id = change.doc.id
             this.rolls.unshift(roll)
-            // eslint-disable-next-line no-console
-            console.log(this.rolls)
           }
         })
       })
