@@ -10,7 +10,7 @@
         <input v-model="diceSize" class="border border-black" type="number" name="dice size" />
       </div>
       <div class="block">
-        <label class="block" for="username">Amount of dice</label>
+        <label class="block" for="username">Dice amount</label>
         <input v-model="diceAmount" class="border border-black" type="number" name="dice amount" />
       </div>
       <div>
@@ -31,8 +31,6 @@
         <div class="flex justify-center space-x-6 flex-row mb-1 mt-6">
           <p><b>Name: </b>{{ roll.name }}</p>
           <p><b>Successes: </b>{{ roll.successes }}</p>
-          <!-- <p><b>Dice Size: </b>{{ roll.diceSize }}</p>
-          <p><b>Dice Amount: </b>{{ roll.diceAmount }}</p> -->
         </div>
         <div class="flex justify-center space-x-6 flex-row flex-wrap mb-2">
           <p><b>Rolls: </b></p>
@@ -40,8 +38,8 @@
             {{ dice }}
           </div>
         </div>
-        <div class="flex justify-center space-x-6 flex-row text-gray-700 text-opacity-25 text-sm">
-          <p><b>Dice Size: </b>{{ roll.diceSize }}</p>
+        <div class="flex justify-center space-x-6 flex-row text-gray-500 text-sm">
+          <p><b>Dice type: </b>{{ roll.diceSize }}</p>
           <p><b>Dice Amount: </b>{{ roll.diceAmount }}</p>
           <p><b>Success threshold: </b>{{ roll.success }}</p>
         </div>
