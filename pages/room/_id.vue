@@ -34,7 +34,12 @@
         </div>
         <div class="flex justify-center space-x-6 flex-row flex-wrap mb-2">
           <p><b>Rolls: </b></p>
-          <div v-for="(dice, index) in roll.dice" :key="index" class="flex flex-row">
+          <div
+            v-for="(dice, index) in roll.dice"
+            :key="index"
+            :class="{ 'text-green-700': dice >= roll.successThreshold }"
+            class="flex flex-row"
+          >
             {{ dice }}
           </div>
         </div>
