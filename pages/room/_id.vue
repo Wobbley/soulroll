@@ -30,7 +30,7 @@
       <div v-for="roll in rolls" :key="roll.id" class="border-t border-black">
         <div class="flex justify-center space-x-6 flex-row mb-1 mt-6">
           <p><b>Name: </b>{{ roll.name }}</p>
-          <p><b>Successes: </b>{{ roll.successes }}</p>
+          <p v-if="roll.diceAmount >= 10"><b>Successes: </b>{{ roll.successes }}</p>
         </div>
         <div class="flex justify-center space-x-6 flex-row flex-wrap mb-2">
           <p><b>Rolls: </b></p>
