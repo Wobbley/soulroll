@@ -17,6 +17,8 @@
 </template>
 
 <script>
+import slugify from 'slugify'
+
 export default {
   data() {
     return {
@@ -26,9 +28,14 @@ export default {
   },
   methods: {
     createRoom(roomName) {
+      const roomNameSlug = slugify(roomName, {
+        replacement: '-',
+        remove: /[$*_+~.()'"!\-:@]/g,
+        lower: true,
+      })
       this.$fire.firestore
         .collection('rooms')
-        .doc(roomName)
+        .doc(roomNameSlug)
         .get()
         .then((doc) => {
           if (doc.exists) {
@@ -36,9 +43,9 @@ export default {
             this.error = 'Room already exists'
             return
           }
-          this.$fire.firestore.collection('rooms').doc(roomName).set({})
+          this.$fire.firestore.collection('rooms').doc(roomNameSlug).set({})
           this.error = ''
-          this.$router.push({ name: 'room-id', params: { id: roomName } })
+          this.$router.push({ name: 'room-id', params: { id: roomNameSlug } })
         })
     },
   },
