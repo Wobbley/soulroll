@@ -68,6 +68,12 @@ export default {
     }
   },
   created() {
+    if (process.client) {
+      this.name = localStorage.getItem('name')
+      this.diceSize = localStorage.getItem('diceSize')
+      this.diceAmount = localStorage.getItem('diceAmount')
+      this.successThreshold = localStorage.getItem('successThreshold')
+    }
     const newerThan = DateTime.local().minus({ days: 7 })
     this.$fire.firestore
       .collection('rooms')
@@ -105,6 +111,10 @@ export default {
         diceRolls++
       }
       this.$fire.firestore.collection('rooms').doc(this.roomName).collection('rolls').add(newRoll)
+      localStorage.setItem('name', name)
+      localStorage.setItem('diceSize', diceSize)
+      localStorage.setItem('diceAmount', diceAmount)
+      localStorage.setItem('successThreshold', successThreshold)
     },
   },
 }
