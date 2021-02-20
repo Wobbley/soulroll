@@ -26,7 +26,7 @@
         </button>
       </div>
     </div>
-    <div class="flex flex-col">
+    <div class="flex flex-col text-lg">
       <div v-for="roll in rolls" :key="roll.id" class="border-t border-black">
         <div class="flex justify-center space-x-6 flex-row mb-1 mt-6">
           <p><b>Name: </b>{{ roll.name }}</p>
