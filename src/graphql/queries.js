@@ -86,6 +86,7 @@ export const listRolls = /* GraphQL */ `
 export const rollsByRoom = /* GraphQL */ `
   query RollsByRoom(
     $roomId: ID
+    $createdAt: ModelStringKeyConditionInput
     $sortDirection: ModelSortDirection
     $filter: ModelRollFilterInput
     $limit: Int
@@ -93,6 +94,7 @@ export const rollsByRoom = /* GraphQL */ `
   ) {
     rollsByRoom(
       roomId: $roomId
+      createdAt: $createdAt
       sortDirection: $sortDirection
       filter: $filter
       limit: $limit

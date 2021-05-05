@@ -81,17 +81,16 @@ export default {
       this.diceAmount = localStorage.getItem('diceAmount')
       this.successThreshold = localStorage.getItem('successThreshold')
     }
-    API.graphql({ query: queries.rollsByRoom, variables: { roomId: this.roomName } }).then((roomRolls) => {
-      // eslint-disable-next-line no-console
-      console.log(roomRolls)
-      this.rolls = roomRolls.data.rollsByRoom.items
-    })
+    API.graphql({ query: queries.rollsByRoom, variables: { roomId: this.roomName, sortDirection: 'DESC' } }).then(
+      (roomRolls) => {
+        // eslint-disable-next-line no-console
+        console.log(roomRolls)
+        this.rolls = roomRolls.data.rollsByRoom.items
+      }
+    )
   },
   mounted() {
-    API.graphql({
-      query: subscriptions.onRollByRoomId,
-      variables: { roomId: 'makeroom', sortDirection: 'ASC' },
-    }).subscribe({
+    API.graphql({ query: subscriptions.onRollByRoomId, variables: { roomId: 'makeroom' } }).subscribe({
       next: (roomRoll) => {
         // eslint-disable-next-line no-console
         console.log(roomRoll)

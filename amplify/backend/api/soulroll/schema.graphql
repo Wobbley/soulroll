@@ -6,7 +6,7 @@ type Room @model
 
 type Roll @model
 @auth(rules: [{ allow: public }])
-@key(name: "byRoom", fields: ["roomId"], queryField: "rollsByRoom") {
+@key(name: "byRoom", fields: ["roomId", "createdAt"], queryField: "rollsByRoom") {
   id: ID!
   roomId: ID!
   dice: [Int!]
@@ -15,6 +15,7 @@ type Roll @model
   name: String!
   successThreshold: Int!
   successes: Int!
+  createdAt: String!
 }
 
 type Subscription {
