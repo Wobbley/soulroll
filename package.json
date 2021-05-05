@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@nuxtjs/firebase": "^7.4.1",
+    "aws-amplify": "^3.3.27",
     "core-js": "^3.8.3",
     "firebase": "^8.2.6",
     "luxon": "^1.25.0",

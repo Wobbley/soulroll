@@ -1,0 +1,15 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-soulroll-dev-204500-authRole",
+      "UnauthRoleArn": "arn:aws:iam::876010806564:role/amplify-soulroll-dev-204500-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::876010806564:role/amplify-soulroll-dev-204500-authRole",
+      "Region": "eu-central-1",
+      "DeploymentBucketName": "amplify-soulroll-dev-204500-deployment",
+      "UnauthRoleName": "amplify-soulroll-dev-204500-unauthRole",
+      "StackName": "amplify-soulroll-dev-204500",
+      "StackId": "arn:aws:cloudformation:eu-central-1:876010806564:stack/amplify-soulroll-dev-204500/ac84bef0-ac3f-11eb-aea0-0aff5cdf83aa",
+      "AmplifyAppId": "d1xnqj9g3bcb0n"
+    }
+  }
+}

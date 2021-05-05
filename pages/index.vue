@@ -18,6 +18,12 @@
 
 <script>
 import slugify from 'slugify'
+import Amplify, { API } from 'aws-amplify'
+import awsconfig from '../src/aws-exports'
+import * as mutations from '../src/graphql/mutations'
+import * as queries from '../src/graphql/queries'
+
+Amplify.configure(awsconfig)
 
 export default {
   data() {
@@ -33,20 +39,30 @@ export default {
         remove: /[$*_+~.()'"!\-:@]/g,
         lower: true,
       })
-      this.$fire.firestore
-        .collection('rooms')
-        .doc(roomNameSlug)
-        .get()
-        .then((doc) => {
-          if (doc.exists) {
-            // eslint-disable-next-line no-console
-            this.error = 'Room already exists'
-            return
-          }
-          this.$fire.firestore.collection('rooms').doc(roomNameSlug).set({})
-          this.error = ''
-          this.$router.push({ name: 'room-id', params: { id: roomNameSlug } })
-        })
+      API.graphql({ query: queries.getRoom, variables: { id: roomNameSlug } }).then((room) => {
+        if (room.data.getRoom !== null) {
+          this.error = 'Room already exists'
+          return
+        }
+        API.graphql({ query: mutations.createRoom, variables: { input: { id: roomNameSlug } } })
+        this.error = ''
+        // this.$router.push({ name: 'room-id', params: { id: roomNameSlug } })
+      })
+
+      // this.$fire.firestore
+      //   .collection('rooms')
+      //   .doc(roomNameSlug)
+      //   .get()
+      //   .then((doc) => {
+      //     if (doc.exists) {
+      //       // eslint-disable-next-line no-console
+      //       this.error = 'Room already exists'
+      //       return
+      //     }
+      //     this.$fire.firestore.collection('rooms').doc(roomNameSlug).set({})
+      //     this.error = ''
+      //     this.$router.push({ name: 'room-id', params: { id: roomNameSlug } })
+      //   })
     },
   },
 }

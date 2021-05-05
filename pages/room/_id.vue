@@ -54,7 +54,14 @@
 </template>
 
 <script>
-import { DateTime } from 'luxon'
+import Amplify, { API } from 'aws-amplify'
+import awsconfig from '../../src/aws-exports'
+// import { DateTime } from 'luxon'
+import * as mutations from '../../src/graphql/mutations'
+import * as queries from '../../src/graphql/queries'
+import * as subscriptions from '../../src/graphql/subscriptions'
+
+Amplify.configure(awsconfig)
 
 export default {
   data() {
@@ -74,22 +81,23 @@ export default {
       this.diceAmount = localStorage.getItem('diceAmount')
       this.successThreshold = localStorage.getItem('successThreshold')
     }
-    const newerThan = DateTime.local().minus({ days: 7 })
-    this.$fire.firestore
-      .collection('rooms')
-      .doc(this.roomName)
-      .collection('rolls')
-      .where('rollDate', '>', newerThan.toMillis())
-      .orderBy('rollDate')
-      .onSnapshot((snapshot) => {
-        snapshot.docChanges().forEach((change) => {
-          if (change.type === 'added') {
-            const roll = change.doc.data()
-            roll.id = change.doc.id
-            this.rolls.unshift(roll)
-          }
-        })
-      })
+    API.graphql({ query: queries.rollsByRoom, variables: { roomId: this.roomName } }).then((roomRolls) => {
+      // eslint-disable-next-line no-console
+      console.log(roomRolls)
+      this.rolls = roomRolls.data.rollsByRoom.items
+    })
+  },
+  mounted() {
+    API.graphql({
+      query: subscriptions.onRollByRoomId,
+      variables: { roomId: 'makeroom', sortDirection: 'ASC' },
+    }).subscribe({
+      next: (roomRoll) => {
+        // eslint-disable-next-line no-console
+        console.log(roomRoll)
+        this.rolls.unshift(roomRoll.value.data.onRollByRoomId)
+      },
+    })
   },
   methods: {
     rollDice(name, diceSize, diceAmount, successThreshold) {
@@ -99,7 +107,7 @@ export default {
       newRoll.diceAmount = diceAmount
       newRoll.successThreshold = successThreshold
       newRoll.successes = 0
-      newRoll.rollDate = Date.now()
+      // newRoll.rollDate = Date.now()
       newRoll.dice = []
       let diceRolls = 0
       while (diceRolls < newRoll.diceAmount) {
@@ -110,7 +118,21 @@ export default {
         newRoll.dice.push(result)
         diceRolls++
       }
-      this.$fire.firestore.collection('rooms').doc(this.roomName).collection('rolls').add(newRoll)
+      API.graphql({
+        query: mutations.createRoll,
+        variables: {
+          input: {
+            roomId: this.roomName,
+            dice: newRoll.dice,
+            diceAmount: newRoll.diceAmount,
+            diceSize: newRoll.diceSize,
+            name: newRoll.name,
+            successThreshold: newRoll.successThreshold,
+            successes: newRoll.successes,
+          },
+        },
+      })
+      // this.$fire.firestore.collection('rooms').doc(this.roomName).collection('rolls').add(newRoll)
       localStorage.setItem('name', name)
       localStorage.setItem('diceSize', diceSize)
       localStorage.setItem('diceAmount', diceAmount)

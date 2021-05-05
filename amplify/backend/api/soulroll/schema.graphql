@@ -1,0 +1,23 @@
+type Room @model 
+@auth(rules: [{ allow: public }]) {
+  id: ID!
+  rolls: [Roll] @connection(keyName: "byRoom", fields: ["id"])
+}
+
+type Roll @model
+@auth(rules: [{ allow: public }])
+@key(name: "byRoom", fields: ["roomId"], queryField: "rollsByRoom") {
+  id: ID!
+  roomId: ID!
+  dice: [Int!]
+  diceAmount: Int!
+  diceSize: Int!
+  name: String!
+  successThreshold: Int!
+  successes: Int!
+}
+
+type Subscription {
+  onRollByRoomId(roomId: ID!): Roll
+    @aws_subscribe(mutations: ["createRoll"])
+}
