@@ -44,25 +44,11 @@ export default {
           this.error = 'Room already exists'
           return
         }
-        API.graphql({ query: mutations.createRoom, variables: { input: { id: roomNameSlug } } })
-        this.error = ''
-        // this.$router.push({ name: 'room-id', params: { id: roomNameSlug } })
+        API.graphql({ query: mutations.createRoom, variables: { input: { id: roomNameSlug } } }).then(() => {
+          this.error = ''
+          this.$router.push({ name: 'room-id', params: { id: roomNameSlug } })
+        })
       })
-
-      // this.$fire.firestore
-      //   .collection('rooms')
-      //   .doc(roomNameSlug)
-      //   .get()
-      //   .then((doc) => {
-      //     if (doc.exists) {
-      //       // eslint-disable-next-line no-console
-      //       this.error = 'Room already exists'
-      //       return
-      //     }
-      //     this.$fire.firestore.collection('rooms').doc(roomNameSlug).set({})
-      //     this.error = ''
-      //     this.$router.push({ name: 'room-id', params: { id: roomNameSlug } })
-      //   })
     },
   },
 }

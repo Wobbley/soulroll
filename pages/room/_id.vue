@@ -56,7 +56,6 @@
 <script>
 import Amplify, { API } from 'aws-amplify'
 import awsconfig from '../../src/aws-exports'
-// import { DateTime } from 'luxon'
 import * as mutations from '../../src/graphql/mutations'
 import * as queries from '../../src/graphql/queries'
 import * as subscriptions from '../../src/graphql/subscriptions'
@@ -90,13 +89,17 @@ export default {
     )
   },
   mounted() {
-    API.graphql({ query: subscriptions.onRollByRoomId, variables: { roomId: 'makeroom' } }).subscribe({
+    this.onRollyByRoom = API.graphql({
+      query: subscriptions.onRollByRoomId,
+      variables: { roomId: this.roomName },
+    }).subscribe({
       next: (roomRoll) => {
-        // eslint-disable-next-line no-console
-        console.log(roomRoll)
         this.rolls.unshift(roomRoll.value.data.onRollByRoomId)
       },
     })
+  },
+  beforeDestroy() {
+    this.onRollyByRoom.unsubscribe()
   },
   methods: {
     rollDice(name, diceSize, diceAmount, successThreshold) {
@@ -106,7 +109,6 @@ export default {
       newRoll.diceAmount = diceAmount
       newRoll.successThreshold = successThreshold
       newRoll.successes = 0
-      // newRoll.rollDate = Date.now()
       newRoll.dice = []
       let diceRolls = 0
       while (diceRolls < newRoll.diceAmount) {
@@ -131,7 +133,6 @@ export default {
           },
         },
       })
-      // this.$fire.firestore.collection('rooms').doc(this.roomName).collection('rolls').add(newRoll)
       localStorage.setItem('name', name)
       localStorage.setItem('diceSize', diceSize)
       localStorage.setItem('diceAmount', diceAmount)

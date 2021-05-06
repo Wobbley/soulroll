@@ -11,10 +11,8 @@
     "lint": "yarn lint:js"
   },
   "dependencies": {
-    "@nuxtjs/firebase": "^7.4.1",
     "aws-amplify": "^3.3.27",
     "core-js": "^3.8.3",
-    "firebase": "^8.2.6",
     "luxon": "^1.25.0",
     "nuxt": "^2.14.12",
     "slugify": "^1.4.6"

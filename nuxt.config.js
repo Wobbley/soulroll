@@ -1,5 +1,4 @@
 export default {
-  target: 'static',
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     title: 'Soulroll',
@@ -32,36 +31,7 @@ export default {
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
-  modules: [
-    [
-      '@nuxtjs/firebase',
-      {
-        config: {
-          development: {
-            apiKey: 'AIzaSyAWrInxpwzq2pj5V3sTCD_BCiuDWYFrF7k',
-            authDomain: 'soulbound-roller.firebaseapp.com',
-            projectId: 'soulbound-roller',
-            storageBucket: 'soulbound-roller.appspot.com',
-            messagingSenderId: '864916552589',
-            appId: '1:864916552589:web:8b00b05fafc00f69579bc4',
-            measurementId: 'G-KKT5TNJ4XM',
-          },
-          production: {
-            apiKey: 'AIzaSyAWrInxpwzq2pj5V3sTCD_BCiuDWYFrF7k',
-            authDomain: 'soulbound-roller.firebaseapp.com',
-            projectId: 'soulbound-roller',
-            storageBucket: 'soulbound-roller.appspot.com',
-            messagingSenderId: '864916552589',
-            appId: '1:864916552589:web:8b00b05fafc00f69579bc4',
-            measurementId: 'G-KKT5TNJ4XM',
-          },
-        },
-        services: {
-          firestore: 'true',
-        },
-      },
-    ],
-  ],
+  modules: [],
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
 }
