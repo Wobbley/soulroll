@@ -1,3 +1,3 @@
 #!/bin/bash
-npm install
-npm build
+sudo npm install
+sudo npm build
